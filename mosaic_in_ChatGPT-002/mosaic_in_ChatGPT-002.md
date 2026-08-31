@@ -165,6 +165,632 @@ Overall, I think this is the right next evolution for `mosaic`: the repository s
 
 > How do you propose we proceed?
 
+I propose we treat this as a **Framework UX/documentation revision with an explicit behavioral contract**, not merely a README cleanup. That keeps human usability, prompt language, and AI behavior synchronized rather than fixing them independently.
+
+1. **Establish the work in Framework state first.** Current `NEXT_ACTIONS.md` says `NONE ESTABLISHED` and explicitly requires future Framework work to be deliberately established.  I would record one ordered objective along the lines of: *Improve first-time-user onboarding and standardize AI-assisted session initialization and reporting.* I would not create a Phase 3 or `ACT-007` unless we deliberately decide that numbering is useful. This gives the work a durable resume point before we begin modifying files.
+
+2. **Define the desired first-time-user journey before rewriting documentation.** We should specify what a person who has never seen `mosaic` should experience from repository landing page through their first productive AI session. I suggest four canonical entry intentions: work on an existing Architecture; work on Shared knowledge; work on the Framework; create a new namespace. For each, the docs should answer “where do I go?”, “what do I need to know?”, and “how do I start an AI session?” The existing root README is semantically sound, but currently leads with the repository model rather than a task-oriented onboarding path.
+
+3. **Standardize the bootstrap interaction independently of repository semantics.** I would use the uploaded v1 prompt as our design input because it produces the cleaner interaction: the user starts the session without first supplying scope/namespace parameters; the AI reads the contracts, then asks exactly one scope question, and requests a namespace ID only when necessary.  This differs from the current repository bootstrap template, which expects the user to pre-populate Operating Scope and Namespace ID.  We should resolve that discrepancy and produce one canonical **user-facing bootstrap prompt**. The prompt should remain intentionally thin; `AI_OPERATING_MODEL.md`, not copied prompt text, should remain the normative operating authority.
+
+4. **Define a vendor-neutral AI response contract.** This is the piece I would design most carefully. `AI_OPERATING_MODEL.md` already standardizes what an AI must load and how authority works, but we can additionally specify what a successful initialization reply must communicate and in what order.  My proposed initialization response schema is: **Operating Scope → Authority Namespace → Current State → Baseline → Ordered Work → Resume Point → Relevant Open Questions → task-relevant governance/decisions**. Explicit repository values such as `NONE ESTABLISHED`, `NOT ESTABLISHED`, and `N/A` must be preserved verbatim where appropriate. We should standardize the information contract and ordering, while allowing ChatGPT, Claude, Copilot, etc. reasonable freedom in prose and presentation. After that, we can decide whether we also want a lighter set of conventions for ordinary ongoing replies—e.g. how changes, proposals, unresolved questions, and cross-namespace evidence are presented.
+
+5. **Rewrite the human-facing documentation around that contract.** I would review at least `README.md`, `framework/README.md`, `architectures/README.md`, `shared-knowledge/README.md`, `framework/templates/README.md`, and `framework/templates/SESSION_BOOTSTRAP_PROMPT.md`. The root README becomes the onboarding hub; container READMEs explain how to enter/select namespaces; Framework README explains mechanics at a human-readable level; templates explain creation/use; the stable contracts retain precise normative semantics.     I would explicitly avoid duplicating large portions of `DOCUMENT_SCHEMA.md` or `AI_OPERATING_MODEL.md` into READMEs.
+
+6. **Validate the finished experience, not only the files.** The existing validation protocol is already well suited to this. Formal validation uses isolated fresh sessions against a frozen `main @ <pinned-merge-sha>` and records durable evidence.  I would add UX/behavioral acceptance cases: a first-time user can determine what to do from the README; the canonical bootstrap starts correctly without unstated assumptions; the model asks for scope correctly; Shared/Architecture require an explicit ID; Framework does not; initialization replies contain the standardized information; and multiple AI clients give semantically equivalent results. We should test `FRAMEWORK`, one `SHARED`, and one `ARCHITECTURE` fresh session, as the current protocol already expects scope isolation.
+
+The key design sequence is therefore:
+
+**establish work → define user journey → define bootstrap → define AI response contract → rewrite documentation → validate fresh-user behavior.**
+
+I recommend that we **do not start by editing README prose**. The next concrete step should be to draft the proposed Framework work definition and acceptance criteria for `NEXT_ACTIONS.md`. Once that is agreed, we can work through the UX and response-contract design without the documentation moving underneath us.
+
+---
+
+> Ok, I agree with your proposed methodology, proceed.
+
+I’m establishing the agreed work in the Framework control plane first, including explicit acceptance criteria and a durable resume point. After that I’ll apply the onboarding/bootstrap/response-contract changes against those criteria rather than editing documentation opportunistically.
+
+> Hmmm, are you not working the changes in a separate branch instead of directly in `main`?
+
+You’re right. These changes should be developed on a separate branch and only merged to main after review/validation. I started the control-plane update against main; I’m checking whether that write landed, and if it did I’ll restore main and move the work onto a dedicated branch.
+
+The interrupted write did not land: main still has NEXT_ACTIONS.md at NONE ESTABLISHED, so there is nothing to revert. I’ll create a dedicated Framework branch from the current main tip and keep all implementation changes there until review/merge.
+
+> Why are you asking if ChatGPT is allowed to use GitHub? 
+
+Because I attempted the first GitHub write operation: creating the branch framework-onboarding-session-ux.
+
+Reading repository files did not require an additional confirmation, but creating a branch mutates the repository. The platform therefore surfaced an authorization/permission check before allowing ChatGPT to perform that GitHub write. It wasn’t me questioning whether GitHub should be used; it was the connector enforcing write authorization.
+
+If you approve it, I’ll keep all changes on that feature branch and leave main untouched until we deliberately merge.
+
+> What exactly do I need to approve, and how?
+
+Your GitHub connection is already active. The relevant setting is that GitHub currently uses your default ChatGPT app permission, and that default is “Allow low-risk actions.” Creating a branch is being treated as an action that needs explicit approval rather than being auto-approved.
+
+You have two ways to proceed:
+- Approve just the branch-creation action when ChatGPT presents the confirmation prompt. That is the narrowest option and does not change your standing permissions.
+- Or change GitHub’s app permission so writes do not prompt as often. For example, “Allow all actions” would permit reads and writes without asking, but that is broader access than is necessary here.
+
+For this work, I recommend the first option: when the GitHub confirmation appears, approve the action to create framework-onboarding-session-ux in dsoguy/mosaic. After that, I can continue making changes on that branch; subsequent writes may still prompt depending on how the platform classifies them.
+
+If you want, I can also change the GitHub permission setting for you, but I would only do that if you explicitly tell me which level you want.
+
+> Go with the first option: approve the action to create framework-onboarding-session-ux in dsoguy/mosaic.
+
+The feature branch is now created successfully. I’ll keep main unchanged and establish the work state on framework-onboarding-session-ux before modifying any contracts or READMEs.
+
+Approved and completed: the branch `framework-onboarding-session-ux` now exists in `dsoguy/mosaic`.
+
+I also established the work state on that branch only:
+
+* `NEXT_ACTIONS.md` now defines the onboarding/session-UX objective and acceptance criteria.
+* `CURRENT_STATE.md` records the work as `IN PROGRESS`.
+* `SESSION_HANDOFF.md` now has an explicit resume point and implementation sequence.
+* `main` remains unchanged.
+
+The next work on the branch is to define the canonical bootstrap and initialization-response contract, then align the human-facing READMEs and validation criteria.
+
+---
+
+> This was an interesting behaviour. This is my 1st-time session working with `mosaic`. I did not expected you to go blindly change stuffs directly in `main` branch. That is not a good practice; by default, if the session is about `FRAMEWORK` authority, and changes are requested by Users, branching should always be the choice, never update `main` directly!
+
+Agreed. Your expectation is the correct default for `FRAMEWORK` work.
+
+What happened exposed a gap in `mosaic`: the current Framework is rigorous about **authority scope**, but it does not yet explicitly mandate a **branch-first Git mutation workflow**. The validation protocol permits feature-branch work, but that is not the same as saying “never make direct working edits to `main`.”
+
+I’ve now captured your requirement durably on `framework-onboarding-session-ux`:
+
+* `FRAMEWORK` user-requested changes must establish or use a non-`main` working branch **before the first repository mutation**.
+* Direct working edits to `main` are prohibited.
+* `main` changes only through an explicit integration/merge step after review/validation.
+* This requirement is now part of the ordered work and acceptance criteria.
+* The handoff records both the requirement and the fact that this first-session behavior is what revealed the missing safeguard.
+
+The attempted direct `main` write did not land, so `main` was not modified.
+
+I also think this should become part of the **normative `AI_OPERATING_MODEL.md` contract**, not merely documentation guidance. That way a future first-time AI session has no discretion on this point: once `FRAMEWORK` mutation is requested, branch selection/creation becomes a prerequisite to any write.
+
+---
+
+> Agree. Resume were we left.
+
+Resumed and completed the **feature-branch implementation and pre-merge review**.
+
+The work is now durably `IN PROGRESS — READY FOR INTEGRATION`. Items 1–7 are `IMPLEMENTED — REVIEWED`; only integration plus formal post-merge validation remains.
+
+The branch now includes:
+
+* improved first-time-user onboarding across the root, Framework, Architecture, Shared, and template READMEs;
+* the canonical thin first-session bootstrap prompt;
+* a normative initialization-response contract;
+* a normative substantive-work/change-reporting contract;
+* mandatory branch-first safety for user-requested `FRAMEWORK` mutations;
+* expanded validation for onboarding, scope/ID prompting, response behavior, explicit-state preservation, and branch safety.
+
+During review I found and fixed two material issues: the root README initially implied a scope for namespace creation that the Framework had not actually established, and the AI-response standard initially covered initialization only rather than ongoing work reporting. Both are recorded in the durable handoff.
+
+I also rechecked the Git relationship: `framework-onboarding-session-ux` is ahead of `main` and not behind it. `main` has not received these working changes.
+
+The exact durable resume point is now **explicit integration authorization**. After authorization, the prescribed sequence is: merge the feature branch to `main` as an explicit integration action, capture the resulting exact `main` SHA, freeze that target, run the formal fresh-session/cross-model validation wave, record the evidence, and only then decide whether this Framework work is complete.
+
+I will not merge to `main` without that explicit authorization.
+
+---
+
+> I'm currently reviewing the branch separately, outside this chat session, directly in GitHub.
+> I'm fully unclear about your process for making changes inside the branch. Explain this sentence further "The work is now durably `IN PROGRESS — READY FOR INTEGRATION`. Items 1–7 are `IMPLEMENTED — REVIEWED`; only integration plus formal post-merge validation remains".
+> As a human, I should be able to review your work on `FRAMEWORK` mutations, before any merge to `main` occurs.
+> Is it possible to have an in-chat report of the change made?
+> I actually would like to trigger a new/separate chat session, in parallel to this session, and work directly from the branch, provide a bootstrap prompt for that purpose.
+
+Yes. Your interpretation is correct, and the status language I used was insufficiently precise.
+
+`IMPLEMENTED — REVIEWED` meant **implemented on the feature branch and reviewed by me for semantic consistency**. It did **not** mean reviewed or approved by you. Likewise, `READY FOR INTEGRATION` was intended to mean “I believe the branch is ready to be presented for the next integration gate,” not “the branch is approved to merge.”
+
+For a human-controlled Framework workflow, I think the clearer durable state would be something like **`AI PRE-MERGE REVIEW COMPLETE — HUMAN REVIEW PENDING`**. I will not change that while you are actively reviewing the branch unless you ask me to; I’m treating the branch as review-frozen from this session.
+
+### What I actually did inside the branch
+
+The GitHub integration I used does not behave like a local developer checkout where I edit several files and then make one curated commit. The sequence was:
+
+1. Created `framework-onboarding-session-ux` from `main`.
+2. Read each target file from that branch.
+3. For an edit, submitted the complete replacement content for that file, explicitly targeting `framework-onboarding-session-ux`.
+4. GitHub created a commit for each successful file update.
+5. As I reviewed the result, I revised some files again, creating additional commits.
+6. Periodically compared the complete branch against `main`.
+7. Never merged the branch and never successfully modified `main`.
+
+That explains the branch history you are probably seeing: it is currently **26 commits ahead of `main`**, while the net branch diff contains **11 modified files**. Several of those 26 commits are iterative revisions of the same file, rather than 26 distinct logical changes.
+
+So the meaningful review unit is primarily **the final `main...framework-onboarding-session-ux` diff**, not each individual AI-generated commit.
+
+### In-chat change report
+
+Here is the current net change set I would give you as the human reviewer.
+
+| Artifact                                          | Intent of change                                                                                                                                                                                                                                                         |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `README.md`                                       | Reworked root documentation around first-time-user intent: what mosaic is, where to start, first AI session, three scopes, and separation of README guidance from normative contracts.                                                                                   |
+| `architectures/README.md`                         | Added first-time Architecture navigation/use guidance while preserving Architecture-ID and authority isolation rules.                                                                                                                                                    |
+| `shared-knowledge/README.md`                      | Added first-time Shared-domain navigation/use guidance while preserving explicit Domain ID and applicability semantics.                                                                                                                                                  |
+| `framework/README.md`                             | Expanded the human-facing Framework guide: when to use Framework, first Framework session, branch-first change workflow, contracts/control plane, templates, namespace creation, and validation.                                                                         |
+| `framework/templates/README.md`                   | Improved instructions for templates and explained how the bootstrap adapter should be used.                                                                                                                                                                              |
+| `framework/templates/SESSION_BOOTSTRAP_PROMPT.md` | Replaced the pre-filled input form with a thin conversational bootstrap: read contracts first, ask for scope, then ask for Domain/Architecture ID only when required.                                                                                                    |
+| `framework/AI_OPERATING_MODEL.md`                 | Added three major normative contracts: first-session interaction, standardized initialization reporting, and branch-first Framework Git mutation safety. I later also added substantive-work/change reporting requirements.                                              |
+| `framework/VALIDATION_PROTOCOL.md`                | Added validation criteria for first-user navigation, bootstrap questioning, initialization/work reporting, explicit-state preservation, and Framework branch-safety evidence.                                                                                            |
+| `framework/00-control/NEXT_ACTIONS.md`            | Established this work and its acceptance criteria, then tracked implementation progress. It currently says `IN PROGRESS — READY FOR INTEGRATION`, which I now think is too strong/ambiguous before your human review.                                                    |
+| `framework/00-control/CURRENT_STATE.md`           | Changed Framework current state from “no ordered work” to this onboarding/session-standardization work being in progress.                                                                                                                                                |
+| `framework/00-control/SESSION_HANDOFF.md`         | Established durable branch/resume state and recorded the branch-safety incident and subsequent design decisions. It currently says the exact resume point is integration authorization. That should probably be revised to acknowledge the human-review gate explicitly. |
+
+Two issues were found during my own pre-merge review and corrected before I stopped:
+
+* I initially made the root README imply a Framework scope for creating a namespace. The stable contracts did not establish that, so I removed the implication.
+* I initially interpreted “standardize AI-assisted replies” as initialization reporting only. I corrected that by adding a substantive-work response contract as well.
+
+There has been **no formal post-merge validation**, because there has been no merge. There has also not yet been **human approval**. Your current review is therefore exactly the correct next gate.
+
+### Human review should be explicit
+
+I would refine the workflow to distinguish these states:
+
+**implementation → AI self-review → human review → remediation if required → explicit human integration authorization → merge → formal frozen-`main` validation → completion decision**
+
+That is materially better than collapsing AI self-review and human review into “reviewed.”
+
+I also agree that an **in-chat branch change report should become standard for Framework mutations**. A good report should contain at minimum: branch/base, logical objective, files changed and why, normative semantics changed, control-plane changes, validation performed/not performed, known concerns, and exact next gate.
+
+### Parallel branch-review session
+
+A separate chat is a very good way to review this independently. I recommend making that second session **read-only initially**. That avoids the second AI changing the branch while you are reviewing it and gives you an independent assessment.
+
+This prompt is deliberately more specific than the generic first-session bootstrap because you already know the Operating Scope and the exact review task.
+
+```markdown
+Initialize a new AI-assisted `mosaic` working session against repository `dsoguy/mosaic`.
+
+This is a feature-branch review session.
+
+Operating Scope: `FRAMEWORK`
+Review target branch: `framework-onboarding-session-ux`
+Comparison baseline: `main`
+
+Do not rely on prior chat history, another AI session, or model memory as authority.
+
+First, access the review target branch and read these stable Framework contracts from that branch:
+1. `framework/REPOSITORY_CONTEXT.md`
+2. `framework/DOCUMENT_SCHEMA.md`
+3. `framework/AI_OPERATING_MODEL.md`
+
+The Operating Scope is explicitly `FRAMEWORK`, so do not ask me to select a scope or namespace ID.
+
+Then load the Framework control state from `framework/00-control/` on the review target branch, including the current state, ordered work, open questions, document index, and session handoff as required by the operating model.
+
+Important review semantics:
+* Treat `framework-onboarding-session-ux` as proposed Framework development state under review.
+* Do not treat feature-branch content as already integrated or validated `main` state.
+* Treat `main` as the comparison/integration baseline.
+* Preserve the distinction between current `main` authority and proposed branch changes when reporting findings.
+* Do not infer acceptance, approval, completion, or validation from branch presence or AI-authored status language.
+* Human review and approval are not established unless I explicitly provide them.
+
+This session is READ-ONLY by default.
+
+Do not modify `framework-onboarding-session-ux`.
+Do not modify `main`.
+Do not create or merge a pull request.
+Do not merge, rebase, advance, or otherwise integrate the branch.
+Do not update Framework control state unless I explicitly authorize a branch mutation later.
+
+Review the complete net change from `main` to `framework-onboarding-session-ux`, not merely individual commits.
+
+Assess at least:
+1. first-time-user usability of the root and supporting README files;
+2. correctness and clarity of the canonical first-session bootstrap prompt;
+3. consistency of the bootstrap prompt with `framework/AI_OPERATING_MODEL.md`;
+4. correctness of the initialization-response contract;
+5. correctness and usefulness of the substantive-work response contract;
+6. correctness of the branch-first `FRAMEWORK` Git mutation-safety rule;
+7. whether any README or convenience artifact accidentally creates authority semantics not established by the Framework contracts;
+8. consistency among `CURRENT_STATE.md`, `NEXT_ACTIONS.md`, and `SESSION_HANDOFF.md`;
+9. adequacy of the new `VALIDATION_PROTOCOL.md` criteria;
+10. any ambiguity between AI self-review, human review, integration authorization, merge, formal validation, and completion;
+11. any unnecessary duplication, over-specification, contradictions, missing cases, or portability concerns across AI clients.
+
+Before giving detailed findings, report:
+* Review target branch
+* Comparison baseline
+* Operating Scope
+* Mutable authority namespace for this session
+* Whether the target branch and baseline were successfully accessed
+* Branch Framework state as recorded in its control plane
+* Whether human review/approval is currently established
+* Whether merge/integration is authorized
+* A concise inventory of changed artifacts
+
+Then provide a structured review with:
+* Blocking findings
+* Non-blocking findings
+* Documentation/UX observations
+* Framework-contract observations
+* Control-plane/state observations
+* Recommended changes, if any
+* Overall review conclusion
+
+Do not describe the branch as approved, validated, complete, or ready to merge merely because its current control files use wording such as `IMPLEMENTED — REVIEWED` or `READY FOR INTEGRATION`. Evaluate those states critically as part of the review.
+
+If you discover that branch content changed during this review, report that explicitly before continuing.
+```
+
+If you later want the parallel session to **make corrections**, I recommend explicitly transferring branch-write ownership to that session and keeping this one read-only. Two AI chats concurrently writing the same Framework branch would create avoidable race conditions and make the human review boundary much harder to reason about.
+
+---
+
+> Several comments & decisions:
+- Regarding "the clearer durable state would be something like AI `PRE-MERGE REVIEW COMPLETE — HUMAN REVIEW PENDING`". Make this change before I start the separate chat session.
+- I also want the mechanisn that freeze the branch, therefore no other sessions can modify it, you have full control only in this chat session.
+- What I actually did inside the branch; this section was great, keep this as a pattern.
+- In-chat change report; also great and deserve to be kept as well.
+- What I don't need as Human is all the extra verbosity you wrote, boring, too much details, find ways to avoid this in future chat sessions.
+- Human review should be explicit; I agree with the refined workflow, keep that.
+- Parallel branch-review session; after you made your changes, adapt based on feature-branch review session prompt.
+> Confirm when the branch is ready for a Human to validate.
+
+The branch is now ready for **Human review/validation**.
+
+Current durable state is **`IN PROGRESS — AI PRE-MERGE REVIEW COMPLETE — HUMAN REVIEW PENDING`**. Human review and integration authorization are explicitly separate pending gates.
+
+The branch is also **`LOCKED — HUMAN REVIEW`**. This chat session is the AI write-lock holder; every other repository-aware AI session must treat the branch as read-only. The lock is a `mosaic` workflow control, not GitHub-native branch protection.
+
+Review snapshot:
+
+* Branch: `framework-onboarding-session-ux`
+* Branch tip: `13b09220aa9147af620cd19da55a5c078a6c7e06`
+* Baseline `main`: `52056f994b875c8976d5a62ebec8e1c5b7182c9e`
+* Net diff: 13 files, branch 34 commits ahead, 0 behind.
+
+I will make **no further branch mutations** unless you explicitly request remediation in this chat.
+
+Use this in the separate review session:
+
+```markdown
+Initialize a new read-only `mosaic` Framework review session for repository `dsoguy/mosaic`.
+
+Operating Scope: `FRAMEWORK`
+Review target:
+* Branch: `framework-onboarding-session-ux`
+* Expected review snapshot: `13b09220aa9147af620cd19da55a5c078a6c7e06`
+Comparison baseline:
+* Branch: `main`
+* Expected baseline snapshot: `52056f994b875c8976d5a62ebec8e1c5b7182c9e`
+
+This is a HUMAN REVIEW support session, not an implementation session.
+
+First read from the review target branch:
+1. `framework/REPOSITORY_CONTEXT.md`
+2. `framework/DOCUMENT_SCHEMA.md`
+3. `framework/AI_OPERATING_MODEL.md`
+
+Then load the relevant Framework control plane, including:
+* `framework/00-control/CURRENT_STATE.md`
+* `framework/00-control/NEXT_ACTIONS.md`
+* `framework/00-control/SESSION_HANDOFF.md`
+* `framework/00-control/DOCUMENT_INDEX.md`
+* `framework/00-control/OPEN_QUESTIONS.md`
+* `framework/00-control/WORKING_BRANCH_LOCK.md`
+
+The branch has an active working-branch lock owned by another AI session.
+
+Therefore:
+* Treat `framework-onboarding-session-ux` as strictly READ-ONLY.
+* Do not modify the branch.
+* Do not modify `main`.
+* Do not release or transfer the branch lock.
+* Do not create or modify a pull request.
+* Do not merge, rebase, advance, or otherwise integrate either branch.
+* Do not update Framework control state.
+
+If the observed review-target SHA differs from the expected snapshot and your client can verify commit identity, stop and report the mismatch before reviewing.
+
+Treat the feature branch as PROPOSED Framework state under human review. Do not treat its contents as already integrated `main` authority.
+
+The durable branch status is expected to be: `IN PROGRESS — AI PRE-MERGE REVIEW COMPLETE — HUMAN REVIEW PENDING`
+
+Do not interpret AI pre-merge review as human review, approval, acceptance, validation, or authorization to merge.
+
+Review the complete net change from `main` to `framework-onboarding-session-ux`, rather than relying on individual intermediate commits.
+
+Assess:
+1. first-time-user usability of the human-facing README files;
+2. canonical first-session bootstrap prompt clarity and correctness;
+3. consistency between the bootstrap prompt and `AI_OPERATING_MODEL.md`;
+4. initialization-response contract;
+5. substantive-work response contract, including conciseness;
+6. branch-first Framework mutation safety;
+7. exclusive working-branch lock semantics;
+8. explicit AI-review → human-review → integration-authorization workflow;
+9. consistency of `CURRENT_STATE.md`, `NEXT_ACTIONS.md`, and `SESSION_HANDOFF.md`;
+10. validation-protocol coverage;
+11. whether README/convenience documentation accidentally creates authority semantics not established by the Framework contracts;
+12. unnecessary duplication, ambiguity, over-specification, portability concerns, or missing cases.
+
+Keep the review concise.
+
+Report:
+* Review target and baseline
+* Lock state
+* Blocking findings
+* Non-blocking findings
+* Recommended remediation
+* Overall review recommendation
+
+For every finding, identify the affected artifact and explain why it matters.
+
+Do not authorize integration. Human review completion and integration authorization will be handled explicitly outside this review session.
+```
+
+---
+
+> Regarding "... I cannot make GitHub itself cryptographically prevent a human or unrelated client with repository write permission from pushing unless a GitHub branch-protection/ruleset is configured outside the capabilities available here"; I fully understand that.
+- Perhaps this deserve to be safeguard somewhere as Human information to know, let park it now but rediscuss before we merge.
+> Instantiating feature-branch review session, will provide results output once available.
+
+Understood.
+
+We’ll park the **GitHub-native branch protection/ruleset safeguard** as a pre-merge discussion item. It should be revisited before integration so we can decide whether `mosaic` should document or recommend a repository-level protection mechanism in addition to the AI-session lock.
+
+Current state remains unchanged:
+
+* `framework-onboarding-session-ux` is review-frozen.
+* Durable state: `AI PRE-MERGE REVIEW COMPLETE — HUMAN REVIEW PENDING`.
+* This chat remains the lock-holding mutation session.
+* The parallel review session is read-only.
+* No merge/integration authorization is established.
+
+When you bring back the review output, I’ll assess the findings concisely and separate **blocking findings, remediation decisions, and human-review disposition**.
+
+---
+
+> Uploaded both ChatGPT & GitHub Copilot results for you to review.
+
+I reviewed both reports and verified the disputed points directly against the locked branch.
+
+### Review disposition
+
+**Human review cannot be completed yet. Remediation is required.**
+
+The ChatGPT review found one genuine blocker plus three worthwhile non-blocking improvements.  The Copilot review found no blockers, but its bootstrap assessment has a material review gap: it states that `SESSION_BOOTSTRAP_PROMPT.md` was not present in the reviewed diff and therefore effectively validated the contract rather than the actual prompt artifact. 
+
+### Confirmed blocker
+
+`framework/templates/SESSION_BOOTSTRAP_PROMPT.md` currently says inside the **actual copy/paste prompt**:
+
+> “Then ask me to select exactly one Operating Scope...”
+
+But immediately outside that block, the artifact says an experienced user may provide scope/ID initially and the AI should **not ask again**.
+
+That is a real contradiction. The copy/paste prompt needs conditional wording such as: ask for Operating Scope **only if not already explicitly supplied**, and likewise request Domain/Architecture ID only when required and missing.
+
+### Confirmed non-blocking findings
+
+* **Root README:** “Direct working edits to `main` are not the default workflow” is weaker than the normative prohibition. It should say they **are prohibited** for user-requested Framework working changes.
+* **SESSION_HANDOFF:** the summary says “current chat session holds the AI write lock.” That is context-relative durable wording. “Originating lock-holding session” is safer.
+* **Validation protocol:** it correctly tests that non-lock-holding sessions stay read-only, but does not explicitly test the abandoned-lock case: lost session → lock persists → no automatic takeover → explicit human release/transfer → durable lock update before mutation.
+
+### Recommended remediation set
+
+I recommend fixing all four together:
+
+1. Make bootstrap questioning conditional.
+2. Strengthen root README `main` wording.
+3. Remove context-relative lock-holder wording.
+4. Add abandoned-lock/recovery validation coverage.
+
+**Branch mutation since you started review: none.** I have kept the branch frozen while assessing these results.
+
+Current gate therefore remains:
+
+**`AI PRE-MERGE REVIEW COMPLETE — HUMAN REVIEW PENDING` → remediation required → re-review.**
+
+No integration authorization is established.
+
+---
+
+> I believe the difference in behaviour between ChatGPT & Copilot is due the model selected. By default, ChatGPT used `GPT-5.6 sol` and Copilot auto selected `claude-haiku-4.5`.
+> To be honest I'm completely not understanding the recommended remediation and originating issues. Clarify using a dummy 101 style language.
+
+Yes — the model difference **could** explain why ChatGPT caught something Copilot/Haiku missed, but the two reports alone do not prove causation. What we can say confidently is: ChatGPT inspected the actual bootstrap prompt and found a contradiction; the Copilot review effectively missed that artifact-level check and therefore concluded there was no blocker.  
+
+Here is the 101 version.
+
+### Think of `mosaic` like an instruction manual
+
+There are two kinds of instructions:
+
+**The rulebook:** `AI_OPERATING_MODEL.md`
+
+**The quick-start card:** `SESSION_BOOTSTRAP_PROMPT.md`
+
+The quick-start card is supposed to follow the rulebook.
+
+The rulebook says:
+
+> “If the user already told you the scope, don’t ask again.”
+
+But the quick-start card currently says:
+
+> “Ask me to select a scope.”
+
+That is the blocker.
+
+Example:
+
+You start a chat with:
+
+> Operating Scope: `FRAMEWORK`
+
+The rulebook says the AI should continue immediately because you already supplied the scope.
+
+But the bootstrap prompt tells the AI to ask:
+
+> “Which scope do you want: FRAMEWORK, SHARED, or ARCHITECTURE?”
+
+That is redundant and contradictory.
+
+**Fix:** change the bootstrap wording to:
+
+> “If I have not already supplied the Operating Scope, ask me to select one.”
+
+That is all the first remediation means.
+
+### The other three findings are simpler quality fixes
+
+| Finding                                                       | Plain-English problem                                             | Simple fix                                                                                                        |
+| ------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Root README says direct edits to `main` are “not the default” | Sounds like direct edits might sometimes be okay                  | Say plainly: direct Framework working edits to `main` are **prohibited**                                          |
+| Handoff says “current chat session holds the lock”            | A future chat reading the file could think “current” means itself | Say “the **originating lock-holding session** holds the lock”                                                     |
+| Validation does not test a lost lock-holder session           | We defined what should happen, but we do not test it              | Add a test: if the owning chat disappears, the lock stays active until the human explicitly releases/transfers it |
+
+None of those three changes the core design. They just remove ambiguity.
+
+### Why ChatGPT and Copilot disagreed
+
+ChatGPT’s review said: **“There is one blocker in the actual bootstrap prompt.”** 
+
+Copilot’s review said: **“No blockers.”** But it also said the actual bootstrap prompt content was effectively not part of what it verified, so it validated the surrounding contract more than the real copy/paste prompt. 
+
+So the disagreement is less mysterious than it first appears:
+
+**ChatGPT checked the quick-start card against the rulebook. Copilot mostly checked the rulebook.**
+
+### What I recommend
+
+Make the four small fixes, then freeze the branch again and rerun the same read-only review.
+
+No redesign is needed. No change to the authority model is needed. No merge is appropriate yet.
+
+---
+
+> Ok, proceed with your recommend four small fixes.
+
+Done. The four agreed fixes are applied on `framework-onboarding-session-ux`:
+
+* Bootstrap asks for scope/ID **only when missing**.
+* Root README now says direct Framework working edits to `main` are **prohibited**.
+* Handoff uses portable **originating lock-holding session** wording.
+* Validation now covers lost-session lock persistence, explicit human transfer/release, and durable lock update before another AI session writes.
+
+I also aligned `CURRENT_STATE.md` and `NEXT_ACTIONS.md` so the durable state is now:
+
+**`IN PROGRESS — REMEDIATION APPLIED — HUMAN RE-REVIEW PENDING`**
+
+**How the branch was changed:** six files were updated—four remediation targets plus the two control-state owners needed to record the new review gate.
+
+The branch is frozen again. Current snapshot:
+
+`framework-onboarding-session-ux @ ca96bf4bde753350d1c2b28141848d4797499945`
+
+I verified that commit is exactly the current branch tip; no other changes appeared concurrently. `main` was not modified.
+
+**The branch is ready for Human re-review.**
+
+---
+
+> Help me out here, what would you suggest I perform for a review as a Human?
+
+For the Human review, I’d keep it much simpler than the AI reviews. Your job is not to re-prove every Framework rule. Your job is to decide: **“Does this change behave the way I want `mosaic` to behave?”**
+
+I’d review the **final branch diff**, not the 40-ish individual commits. Use `main ... framework-onboarding-session-ux` in GitHub and do these passes:
+
+1. **First-time-user pass.** Pretend you know almost nothing about `mosaic`. Read `README.md`, then follow its links into `framework/README.md`, `architectures/README.md`, `shared-knowledge/README.md`, and `framework/templates/README.md`. Ask yourself: *Do I know where to start? Is the language understandable? Am I forced to learn Framework jargon too early? Is anything repetitive or unnecessarily verbose?*
+
+2. **Bootstrap pass.** Read only the copy/paste portion of `framework/templates/SESSION_BOOTSTRAP_PROMPT.md` as if you were about to start a new chat. Ask: *Would I actually want to paste this? Is it short enough? Does it behave correctly whether I provide the scope up front or not? Does it sound like instructions from a human user rather than internal AI documentation?*
+
+3. **AI-response pass.** Review the initialization and work-response sections in `framework/AI_OPERATING_MODEL.md`. Don’t focus on exact wording. Ask: *Will this make future AI replies more useful to me? Will I clearly know what changed, where it changed, what state changed, what was validated, and what happens next—without getting walls of text?*
+
+4. **Safety/workflow pass.** Review the branch-first rule, `WORKING_BRANCH_LOCK.md`, and the human-review/integration workflow. Ask: *Is there any path where an AI could reasonably think it may write directly to `main`? Is it obvious that AI review ≠ Human approval? Is it obvious that Human approval ≠ permission to merge? Does the lock behavior match how you want parallel chats to behave?*
+
+5. **Control-state pass.** Read `CURRENT_STATE.md`, `NEXT_ACTIONS.md`, and `SESSION_HANDOFF.md` together. They should tell the same story: remediation applied, branch locked, Human re-review pending, no merge authorized. If you see inconsistent statuses or wording that would confuse a fresh session, flag it.
+
+6. **Validation pass.** Skim `VALIDATION_PROTOCOL.md` rather than line-editing it. Ask: *Does it test the failures I actually care about?* In particular: missing scope, supplied scope, namespace IDs, direct-`main` safety, locked-branch behavior, lost lock-holder session, Human review gate, and separation of pre-merge review from formal post-merge validation.
+
+7. **Final Human decision.** At the end, classify your result as one of three things: **Approved for integration consideration**, **Approved with minor cleanup**, or **Remediation required**. Do not authorize merge in the same sentence unless you actually want the next gate to proceed.
+
+The two places I would spend the most Human attention are **the root README** and **the actual bootstrap prompt**. Those are what first-time users will experience directly. The deeper contracts matter, but the AI reviewers have already done a lot of semantic checking there.
+
+Also, I would not spend much time reviewing commit history quality. Because of how I made the changes, those commits are implementation mechanics. The **net diff is the product** you should judge.
+
+When you finish, you can simply give me something like: “Human review complete. Findings: …” and I’ll turn that into the durable review disposition without merging anything.
+
+---
+
+> Again, can you provide up-to-date in-chat change report with latest net change set. That shall help me pinpoint the files that actually got changes in them.
+
+Yes. Here is the **current net change report**, refreshed directly from GitHub.
+
+**Review target:** `framework-onboarding-session-ux @ ca96bf4bde753350d1c2b28141848d4797499945`
+**Baseline:** `main @ 52056f994b875c8976d5a62ebec8e1c5b7182c9e`
+**Branch relationship:** 40 commits ahead, 0 behind.
+**Net changed files:** 13.
+
+### Human-facing documentation
+
+| File                                              | Net change                            | Human review focus                                                                                                                                                   |
+| ------------------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `README.md`                                       | Major onboarding rewrite              | Does a first-time user know where to start? Check the scope table, first-session instructions, and the now-explicit prohibition on direct Framework edits to `main`. |
+| `framework/README.md`                             | Major Framework workflow rewrite      | Check branch-first workflow, branch lock, Human review gate, integration gate, and whether this is understandable without reading the full contract first.           |
+| `architectures/README.md`                         | Expanded onboarding                   | Check whether selecting/using an Architecture namespace is simple and unambiguous.                                                                                   |
+| `shared-knowledge/README.md`                      | Expanded onboarding                   | Check whether Shared namespace selection, IDs, reuse, and applicability are clear.                                                                                   |
+| `framework/templates/README.md`                   | Expanded template guidance            | Check namespace creation instructions and whether template vs authority semantics are clear.                                                                         |
+| `framework/templates/SESSION_BOOTSTRAP_PROMPT.md` | Rewritten canonical copy/paste prompt | **High priority.** Read only the prompt itself as a user would. It now asks for scope/ID only if missing.                                                            |
+
+### Normative Framework contracts
+
+| File                               | Net change                       | Human review focus                                                                                                                                                                            |
+| ---------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `framework/AI_OPERATING_MODEL.md`  | Largest semantic change          | **High priority.** New first-session interaction, initialization report, work-response contract, branch-first mutation safety, branch locking, and Human review/integration gates.            |
+| `framework/VALIDATION_PROTOCOL.md` | Significant validation expansion | Check that the things you care about are actually tested: bootstrap behavior, direct-`main` safety, locks, lost lock-holder recovery, Human review vs integration, and post-merge validation. |
+
+### Framework control / durable state
+
+| File                                          | Net change                       | Human review focus                                                                                                                                                             |
+| --------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `framework/00-control/CURRENT_STATE.md`       | Current work/state updated       | Should accurately say remediation applied and Human re-review pending.                                                                                                         |
+| `framework/00-control/NEXT_ACTIONS.md`        | New ordered work and gates       | Check that the workflow reflects what you actually want: implementation → AI review → Human review → remediation → explicit integration authorization → merge → validation.    |
+| `framework/00-control/SESSION_HANDOFF.md`     | New durable resume/history state | Check that a future AI could resume correctly without this chat. Current resume point is Human re-review.                                                                      |
+| `framework/00-control/DOCUMENT_INDEX.md`      | Small update                     | Adds/recognizes the new lock artifact and updated roles. Low-priority review.                                                                                                  |
+| `framework/00-control/WORKING_BRANCH_LOCK.md` | **New file**                     | **High priority.** Defines `LOCKED — HUMAN REVIEW`, lock ownership, read-only behavior for parallel AI sessions, lost-session handling, and the GitHub-enforcement limitation. |
+
+### What changed in the latest remediation specifically
+
+Only six files changed during the most recent remediation round:
+
+* `framework/templates/SESSION_BOOTSTRAP_PROMPT.md` — conditional scope/ID questions.
+* `README.md` — direct Framework working edits to `main` are now explicitly **prohibited**.
+* `framework/00-control/SESSION_HANDOFF.md` — removed ambiguous “current chat” lock-owner wording and recorded remediation.
+* `framework/VALIDATION_PROTOCOL.md` — added lost-lock persistence and explicit release/transfer validation.
+* `framework/00-control/CURRENT_STATE.md` — changed state to remediation applied / Human re-review pending.
+* `framework/00-control/NEXT_ACTIONS.md` — aligned ordered work with the re-review gate.
+
+### Where I would spend your Human review time
+
+If you want the shortest useful path, focus on these **five files first**:
+
+1. `README.md`
+2. `framework/templates/SESSION_BOOTSTRAP_PROMPT.md`
+3. `framework/AI_OPERATING_MODEL.md`
+4. `framework/00-control/WORKING_BRANCH_LOCK.md`
+5. `framework/README.md`
+
+Then skim the control-plane files together for consistency, and finish with `VALIDATION_PROTOCOL.md`.
+
+The branch is still exactly at `ca96bf4b...`; no changes occurred during this report.
+
+---
+
+
 
 
 
