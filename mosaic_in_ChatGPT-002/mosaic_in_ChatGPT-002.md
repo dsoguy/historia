@@ -1109,11 +1109,11 @@ If those behave the way you expect, the bootstrap/session-UX portion will have s
 
 ---
 
-
-
-
-
-
+> I reran the bootstrap tests, here are my comments:
+- Test 1: The issue seem to be resolved.
+- Test 2, Test 3, and Test 4: The AI is behaving as expected.
+- Take note that a follow-up FRAMEWORK-scoped session is needed to manage namespace-creation setup operation.
+> Comment/suggestions.
 
 
 
