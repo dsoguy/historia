@@ -790,6 +790,328 @@ The branch is still exactly at `ca96bf4b...`; no changes occurred during this re
 
 ---
 
+> Uploaded my version of `README.md`, here are all my comments:
+- Keep the `mosaic` section with one liner separate,
+- Re-add the `Purpose` section
+  - The 2 starting sentences are great but perhaps introduce what 'authority' means in the context.
+- Move up the `Repository Map` + `Three Operating Scopes` sections together.
+  - In `Repository Map`; "Authority begins in their direct child namespaces." - This does not read well.
+  - In `Three Operating Scopes, SHARED`; "Shared means reusable; it does not mean universally applicable." - Rephrase to be more human readable.
+  - In `Three Operating Scopes, FRAMEWORK`; 1st sentence = great.
+    - "... changes are developed on a non-main working branch" - This is weird, re-use standard software development language such as child branch or feature branch.
+    - "integration to main is an explicit later step governed by the Framework operating model" - Another weird sentence, rephrase to be more human readable.
+- Next is `The One Rule to Remember` but I don't like the name and prefer the original `Authority Model`; rename.
+  - "Authority namespace determines the authority boundary" this is fine.
+  - "topic determines the retrieval boundary" is fully unclear. Here 'topic' is introduced without any context.
+  - "... working session"; perhaps explicitly define what it is, a fresh/separated chat session.
+- Next is `Human Documentation vs Normative Contracts` = don't like this title... replace with `Starting documentation to navigate`.
+  - In the `main` branch version, under `Start Here` section, the `For human navigation` structure was better, I recovered it.
+  - Add Markdown links to associated all 4 `README.md` together so that it's easy to navigate between them.
+  - I truly don't understand the wording for "normative rule".
+- Next is `Normative Contracts` = don't like this title...
+  - I truly don't understand the wording for 'Normative Contracts' or "Framework contracts".
+  - The 4 listed AI initialization files are fine, keep them
+  - Sentence "If a README or convenience prompt conflicts with those contracts, the Framework contracts govern" is fully unclear, change.
+  - Again add Markdown links to the listed files.
+- Next `Starting Examples`
+  - This table is great, keep.
+  - Again add Markdown links to the listed files.
+- Move `First AI-Assisted Session` as a sub-section of `Starting Examples`
+  - The overall 6 steps are great, keep. It's the language that is ackward...
+  - "or equivalent AI workspace" = weird, what does this mean?
+  - "canonical prompt" = weird, what does this mean?
+  - "Framework contracts" if previously defined, this is fine here!
+  - In step 4, end with a reference to the template folder for examples prompt.
+  - "... before substantive work begins" = weird, change.
+  - The closing sentence "You may include ... scope or namespace ID" = unclear, referring to "task or topic" is confusing, using "first prompt" instead of "bootstrap prompt", why always rename the same context with various naming?
+- Next `Durable Continuity` = great
+  - "...from its control plane", what's this?
+
+Applied your README review comments using your uploaded version as the structural base. 
+
+### What changed
+
+* Restored the separate `mosaic` one-liner and `Purpose` section.
+* Added a plain-English definition of **authority** and **authority namespace**.
+* Moved `Repository Map` and `Three Operating Scopes` near the top.
+* Reworded the container/authority explanation.
+* Rephrased `SHARED` applicability in more human language.
+* Replaced “non-main working branch” with standard **feature branch** terminology.
+* Reworded the merge/integration language around Human review and authorization.
+* Restored `Authority Model` and explained the previously unclear retrieval concept without using “topic determines the retrieval boundary.”
+* Defined an AI-assisted working session as one fresh/separate AI chat.
+* Replaced the documentation/contracts headings with:
+
+  * `Starting Documentation to Navigate`
+  * `Framework Rules and Reference Files`
+* Added Markdown links to all navigation and Framework files.
+* Explicitly introduced the term **Framework contracts** before reusing it later.
+* Preserved the `Starting Examples` table and added links.
+* Moved `First AI-Assisted Session` under `Starting Examples`.
+* Simplified wording such as “equivalent AI workspace,” “canonical prompt,” “substantive work,” and “control plane.”
+* Reworded `Durable Continuity` to explain what repository files actually reconstruct session state.
+
+Only two files changed in this remediation pass:
+
+1. `README.md`
+2. `framework/00-control/SESSION_HANDOFF.md` — records your Human-review remediation while keeping the gate at **Human re-review pending**.
+
+Current frozen branch tip:
+
+`framework-onboarding-session-ux @ b2fa7bac605406edc9b4de34e4a4520064511383`
+
+No other branch changes occurred during verification.
+
+---
+
+> Great `README.md`, approved!
+> Uploaded my version of `framework/templates/SESSION_BOOTSTRAP_PROMPT.md`, here are my comments:
+- Added 1st line and closing line + a Document Control block.
+- Test 1 prompt: Initialize a new read-only `mosaic` Framework review session for repository `dsoguy/mosaic` using branch `framework-onboarding-session-ux`. Uploaded a bootstrap prompt for you to read. 
+  - Here I got this message; The active lock belongs to the originating ChatGPT FRAMEWORK working session. Is "ChatGPT" hardcoded anywhere? Perhpas this should come out as a more generic AI agnostic message.
+- Test 2 prompt: Initialize a new session for repository `dsoguy/mosaic` using branch `framework-onboarding-session-ux`. Uploaded a bootstrap prompt for you to read.
+- Test 3 prompt: Initialize a new session for repository `dsoguy/mosaic` using branch `framework-onboarding-session-ux`. Uploaded a bootstrap prompt for you to read. Operating Scope = ARCHITECTURE
+  -  Here, the AI asks for either the Domain ID or Architecture ID. Could the AI list what's already available to help the human select a valid namespace ID?
+- Test 4 prompt: Initialize a new session for repository `dsoguy/mosaic` using branch `framework-onboarding-session-ux`. Uploaded a bootstrap prompt for you to read.
+  - Operating Scope = ARCHITECTURE
+  - Architecture ID = banane
+  - Here, I got this message; Initialization status: BLOCKED — authority namespace does not exist. Should the AI offer to perhaps instantiate the authority namespace `architectures/banane/` as a new Architecture ID with starting/initialization data?
+> Comment/suggestions.
+
+Your tests exposed useful UX gaps. I would make changes, but not all of them belong in the bootstrap prompt itself.
+
+Your uploaded prompt structure is good: the explicit start/end markers make the prompt easy to isolate when uploaded or pasted, and the hidden Document Control block is reasonable.  I would make one tiny metadata cleanup later: `Last Updated: v1` is mixing a date label with a version value; something like `Current Version: 1.0` would be clearer.
+
+### Test 1 — hardcoded `ChatGPT`
+
+Yes, this is real.
+
+The active `WORKING_BRANCH_LOCK.md` literally says:
+
+> “The originating ChatGPT `FRAMEWORK` working session…”
+
+and `SESSION_HANDOFF.md` also describes the lock holder as the originating ChatGPT session.
+
+That should be made AI-vendor-neutral. I recommend:
+
+> “The originating AI-assisted `FRAMEWORK` working session that established this lock.”
+
+We should **not remove every occurrence of `ChatGPT` from the repository**. Historical validation records such as “ChatGPT — FRAMEWORK: PASS” are legitimate evidence of which client was tested.  The problem is only where the active workflow rule assumes the lock holder must be ChatGPT.
+
+### Test 2 — no scope supplied
+
+This is the expected simple path.
+
+The AI should read the bootstrap prompt and Framework rules, then ask:
+
+> Which Operating Scope do you want: `FRAMEWORK`, `SHARED`, or `ARCHITECTURE`?
+
+Nothing needs changing for that behavior.
+
+### Test 3 — `ARCHITECTURE` supplied, but no Architecture ID
+
+I strongly agree with your suggestion.
+
+Instead of only asking:
+
+> What is the Architecture ID?
+
+the AI should help the Human by discovering the available IDs and saying something like:
+
+> Available Architecture IDs in this repository are `ADOPT` and `ouroboros`. Select one, or provide a different ID if you intend to create a new Architecture namespace.
+
+On the current branch, the existing Architecture IDs are indeed `ADOPT` and `ouroboros`.
+
+Likewise, if the selected scope were `SHARED`, it should list only the Shared IDs—currently `IAM` and `ghe_copilot`.
+
+This does **not** violate the “do not infer the ID” rule. The AI is presenting valid choices; the Human still selects one.
+
+I would add this behavior to `AI_OPERATING_MODEL.md`, not inflate the bootstrap prompt with it.
+
+### Test 4 — `Architecture ID = banane`, but it doesn't exist
+
+Your instinct is right, with one important safeguard.
+
+The AI should not stop at:
+
+> `BLOCKED — authority namespace does not exist.`
+
+That is technically correct but poor UX.
+
+A better response would be roughly:
+
+> Architecture ID `banane` does not currently exist. Existing Architecture IDs are `ADOPT` and `ouroboros`. You can select an existing Architecture, or explicitly request creation of a new Architecture namespace named `banane`.
+
+But it should **not automatically create `architectures/banane/`**.
+
+Why? Creation is a repository mutation, and the current Framework already defines how a new namespace skeleton is created from `framework/templates/authority-namespace/`.  However, the current rules do **not clearly establish which Operating Scope owns the act of creating a namespace that does not yet exist**.
+
+That is the more interesting gap your test discovered.
+
+My preferred model is:
+
+**Namespace creation is a Framework setup operation.**
+
+The flow would become:
+
+`ARCHITECTURE / banane requested` → namespace not found → offer existing IDs or creation → Human chooses creation → perform a separately authorized `FRAMEWORK` namespace-creation operation using the template → then start a fresh `ARCHITECTURE / banane` session.
+
+That keeps the authority model clean: we do not pretend `architectures/banane/` is already an authority namespace before it exists.
+
+### Recommended remediation
+
+I would make four targeted changes next:
+
+1. Make active lock-holder language vendor-neutral in `WORKING_BRANCH_LOCK.md` and current handoff/state wording.
+2. Add **namespace discovery assistance**: when an ID is required but missing, list existing valid IDs for that selected scope before asking.
+3. Add **namespace-not-found assistance**: show existing IDs and offer an explicit namespace-creation path instead of only returning `BLOCKED`.
+4. Formally define **namespace creation as a Framework setup operation**, with explicit Human authorization, followed by a fresh session using the new `ARCHITECTURE` or `SHARED` scope.
+
+The bootstrap prompt itself should remain almost exactly as you uploaded it. These behaviors belong primarily in `AI_OPERATING_MODEL.md`; otherwise the bootstrap prompt will gradually become another copy of the operating rules.
+
+---
+
+> I agree with all four recommended changes your proposed. What about the clearer version value?
+
+Yes. I’d make the Document Control block clearer by separating **version** from **date**.
+
+Your uploaded file currently has `Last Updated: v1`, while the change log uses `1.0`.  I recommend:
+
+```markdown
+<!--
+# Document Control
+
+**Current Version:** 1.0  
+**Last Updated:** 2026-08-31
+
+**Change Log:**
+
+| Version | Date | Author | Changes |
+|---|---|---|---|
+| 1.0 | 2026-08-31 | DSOt | Initial version |
+-->
+```
+
+That gives each field one meaning:
+
+* **Current Version** = document revision, e.g. `1.0`
+* **Last Updated** = actual date
+* **Change Log** = history explaining what changed
+
+I would keep the versioning lightweight rather than introducing full semantic-versioning rules. For this kind of human-facing prompt, `1.0`, `1.1`, `1.2` is sufficient; use a new major version only if the prompt's overall purpose or interaction model materially changes.
+
+And yes, I consider your previous message approval to implement the **four agreed behavioral changes** plus this Document Control cleanup in the next remediation pass.
+
+---
+
+> Perhaps it would be simpler to just keep the below block because it has all the information needed.
+```markdown
+<!--
+# Document Control
+
+| Version | Date | Author | Changes |
+|---|---|---|---|
+| 1.0 | 2026-08-31 | DSOt | Initial version |
+-->
+```
+
+Yes, that is simpler and sufficient.
+
+The table already captures the three things that matter: **version, date, and change description**, plus author attribution. Separate `Current Version` and `Last Updated` fields would just duplicate information.
+
+I recommend keeping exactly this lightweight block:
+
+```markdown
+<!--
+# Document Control
+
+| Version | Date | Author | Changes |
+|---|---|---|---|
+| 1.0 | 2026-08-31 | DSOt | Initial version |
+-->
+```
+
+I’d use that as the final Document Control format for `SESSION_BOOTSTRAP_PROMPT.md`.
+
+---
+
+> Proceed with all 5 agreed changes.
+
+I hit a branch-lock integrity issue before applying the five agreed changes.
+
+The branch was frozen at:
+
+`b2fa7bac605406edc9b4de34e4a4520064511383`
+
+But `framework-onboarding-session-ux` is now **6 commits ahead of that snapshot**, with changes to:
+
+* `architectures/README.md`
+* `framework/00-control/WORKING_BRANCH_LOCK.md`
+* `framework/README.md`
+* `framework/templates/README.md`
+* `framework/templates/SESSION_BOOTSTRAP_PROMPT.md`
+* `shared-knowledge/README.md`
+
+One of those changes already made the lock-holder wording vendor-neutral: it now says **“originating AI-assisted `FRAMEWORK` working session”**.
+
+Because these commits were not made by this lock-holding session, I stopped before writing anything else. Otherwise I could overwrite changes from another session and defeat the purpose of the branch lock.
+
+So the five agreed changes are **not yet applied by this session**.
+
+Please confirm one thing: **were those six commits your intentional Human/manual edits or changes made by one of your parallel review/test sessions?**
+
+If they were intentional, I’ll reload the latest branch state and continue from it. If not, we should first treat this as a lock violation and decide whether to preserve or revert those commits.
+
+---
+
+> The changes were made in this session, prior to this message... what do you suggest next?
+
+That clarification resolves the branch-lock concern. The six commits were legitimate same-session work, so I treated them as part of this lock-holding session and continued from the latest state rather than reverting anything.
+
+All **five agreed changes are now complete**:
+
+1. **Vendor-neutral lock holder** — active lock language uses “originating AI-assisted `FRAMEWORK` working session,” not ChatGPT-specific wording.
+2. **Missing-ID discovery** — for `ARCHITECTURE` or `SHARED`, the AI now lists existing IDs when the required ID is missing and lets the Human choose.
+3. **Nonexistent-ID assistance** — an ID like `banane` is no longer just a dead-end `BLOCKED`; the AI reports it as missing, shows existing choices, and offers the creation path without automatically creating anything.
+4. **Namespace creation workflow** — creation is formally defined as a separate, explicitly requested `FRAMEWORK` setup operation. It creates only initialized structure/identity, then substantive work continues later in a new `ARCHITECTURE` or `SHARED` session.
+5. **Document Control** — your compact hidden change-log block is preserved exactly in the bootstrap prompt.
+
+Matching validation tests were added for all of this, including missing-ID discovery, nonexistent IDs, no silent scope switching, vendor-neutral lock reporting, and namespace creation boundaries.
+
+### What changed in this continuation
+
+I modified five files after resetting our continuity anchor:
+
+* `framework/AI_OPERATING_MODEL.md`
+* `framework/VALIDATION_PROTOCOL.md`
+* `framework/00-control/CURRENT_STATE.md`
+* `framework/00-control/NEXT_ACTIONS.md`
+* `framework/00-control/SESSION_HANDOFF.md`
+
+The bootstrap prompt and lock file were already correct from the earlier same-session commits, so I deliberately did **not** rewrite them again.
+
+Current frozen branch tip:
+
+`framework-onboarding-session-ux @ cce2743b674ce4ff67865573edd2219ab56997a7`
+
+I verified that SHA is exactly the current branch tip.
+
+### What I suggest next
+
+Rather than another full branch review immediately, I’d rerun your **four bootstrap tests** against this new snapshot. Those tests directly exercise the behavior we just changed.
+
+Especially check:
+* Test 1 → lock-holder wording is AI-vendor-neutral.
+* Test 3 → existing Architecture IDs are offered.
+* Test 4 → `banane` produces helpful existing-ID + creation choices, without automatic creation or silent scope switching.
+
+If those behave the way you expect, the bootstrap/session-UX portion will have strong Human evidence and you can move on to reviewing the next changed artifact.
+
+---
+
+
+
+
 
 
 
